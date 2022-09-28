@@ -1,0 +1,772 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## **Milestone Challenge on Used Bikes Data Set**\n",
+    "Welecome to the Milestione Challenge, in this scenario, you will be exploring descriptive statistics on used bikes dataset .\n",
+    "\n",
+    "\n",
+    "**Note** -\n",
+    "- Add extra cells for coding if neccessary.\n",
+    "\n",
+    "- Finally restart and run all the cells after the completion of the challenge.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Run the below cell to import the basic neccessary packages\n",
+    "\n",
+    "\n",
+    "**Note**-\n",
+    "These are basic packages which is needed to solve this challenge,kindly include appropriate modules from the below given packages to solve this challenge based on the given scenarios."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 164,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import statistics\n",
+    "import scipy"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Run the below cell to download the dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 165,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "URL transformed to HTTPS due to an HSTS policy\n",
+      "--2022-09-28 13:59:14--  https://hrcdn.net/s3_pub/istreet-assets/-ccjO7ToeMlvfSIOr-Wxfg/Used_Bikes.csv\n",
+      "Resolving hrcdn.net (hrcdn.net)... 23.212.254.99, 23.212.254.56, 2600:140f:1e00::1737:f64a, ...\n",
+      "Connecting to hrcdn.net (hrcdn.net)|23.212.254.99|:443... connected.\n",
+      "HTTP request sent, awaiting response... 200 OK\n",
+      "Length: 2493547 (2.4M) [application/octet-stream]\n",
+      "Saving to: ‘Used_Bikes.csv.1’\n",
+      "\n",
+      "Used_Bikes.csv.1    100%[===================>]   2.38M  2.09MB/s    in 1.1s    \n",
+      "\n",
+      "2022-09-28 13:59:16 (2.09 MB/s) - ‘Used_Bikes.csv.1’ saved [2493547/2493547]\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "!wget hrcdn.net/s3_pub/istreet-assets/-ccjO7ToeMlvfSIOr-Wxfg/Used_Bikes.csv"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Load the dataset \n",
+    " - Load the Bank Marketing dataset from the file **Used_Bikes.csv** and save it in the variable df."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 166,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>bike_name</th>\n",
+       "      <th>price</th>\n",
+       "      <th>city</th>\n",
+       "      <th>kms_driven</th>\n",
+       "      <th>owner</th>\n",
+       "      <th>age</th>\n",
+       "      <th>power</th>\n",
+       "      <th>brand</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>TVS Star City Plus Dual Tone 110cc</td>\n",
+       "      <td>35000.0</td>\n",
+       "      <td>Ahmedabad</td>\n",
+       "      <td>17654.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>110.0</td>\n",
+       "      <td>TVS</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Royal Enfield Classic 350cc</td>\n",
+       "      <td>119900.0</td>\n",
+       "      <td>Delhi</td>\n",
+       "      <td>11000.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>Royal Enfield</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Triumph Daytona 675R</td>\n",
+       "      <td>600000.0</td>\n",
+       "      <td>Delhi</td>\n",
+       "      <td>110.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>8.0</td>\n",
+       "      <td>675.0</td>\n",
+       "      <td>Triumph</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>TVS Apache RTR 180cc</td>\n",
+       "      <td>65000.0</td>\n",
+       "      <td>Bangalore</td>\n",
+       "      <td>16329.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>180.0</td>\n",
+       "      <td>TVS</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Yamaha FZ S V 2.0 150cc-Ltd. Edition</td>\n",
+       "      <td>80000.0</td>\n",
+       "      <td>Bangalore</td>\n",
+       "      <td>10000.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>Yamaha</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>32643</th>\n",
+       "      <td>Hero Passion Pro 100cc</td>\n",
+       "      <td>39000.0</td>\n",
+       "      <td>Delhi</td>\n",
+       "      <td>22000.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>100.0</td>\n",
+       "      <td>Hero</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>32644</th>\n",
+       "      <td>TVS Apache RTR 180cc</td>\n",
+       "      <td>30000.0</td>\n",
+       "      <td>Karnal</td>\n",
+       "      <td>6639.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>180.0</td>\n",
+       "      <td>TVS</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>32645</th>\n",
+       "      <td>Bajaj Avenger Street 220</td>\n",
+       "      <td>60000.0</td>\n",
+       "      <td>Delhi</td>\n",
+       "      <td>20373.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>6.0</td>\n",
+       "      <td>220.0</td>\n",
+       "      <td>Bajaj</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>32646</th>\n",
+       "      <td>Hero Super Splendor 125cc</td>\n",
+       "      <td>15600.0</td>\n",
+       "      <td>Jaipur</td>\n",
+       "      <td>84186.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>16.0</td>\n",
+       "      <td>125.0</td>\n",
+       "      <td>Hero</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>32647</th>\n",
+       "      <td>Bajaj Pulsar 150cc</td>\n",
+       "      <td>22000.0</td>\n",
+       "      <td>Pune</td>\n",
+       "      <td>60857.0</td>\n",
+       "      <td>First Owner</td>\n",
+       "      <td>13.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>Bajaj</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>32648 rows × 8 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                  bike_name     price       city  kms_driven  \\\n",
+       "0        TVS Star City Plus Dual Tone 110cc   35000.0  Ahmedabad     17654.0   \n",
+       "1               Royal Enfield Classic 350cc  119900.0      Delhi     11000.0   \n",
+       "2                      Triumph Daytona 675R  600000.0      Delhi       110.0   \n",
+       "3                      TVS Apache RTR 180cc   65000.0  Bangalore     16329.0   \n",
+       "4      Yamaha FZ S V 2.0 150cc-Ltd. Edition   80000.0  Bangalore     10000.0   \n",
+       "...                                     ...       ...        ...         ...   \n",
+       "32643                Hero Passion Pro 100cc   39000.0      Delhi     22000.0   \n",
+       "32644                  TVS Apache RTR 180cc   30000.0     Karnal      6639.0   \n",
+       "32645              Bajaj Avenger Street 220   60000.0      Delhi     20373.0   \n",
+       "32646             Hero Super Splendor 125cc   15600.0     Jaipur     84186.0   \n",
+       "32647                    Bajaj Pulsar 150cc   22000.0       Pune     60857.0   \n",
+       "\n",
+       "             owner   age  power          brand  \n",
+       "0      First Owner   3.0  110.0            TVS  \n",
+       "1      First Owner   4.0  350.0  Royal Enfield  \n",
+       "2      First Owner   8.0  675.0        Triumph  \n",
+       "3      First Owner   4.0  180.0            TVS  \n",
+       "4      First Owner   3.0  150.0         Yamaha  \n",
+       "...            ...   ...    ...            ...  \n",
+       "32643  First Owner   4.0  100.0           Hero  \n",
+       "32644  First Owner   9.0  180.0            TVS  \n",
+       "32645  First Owner   6.0  220.0          Bajaj  \n",
+       "32646  First Owner  16.0  125.0           Hero  \n",
+       "32647  First Owner  13.0  150.0          Bajaj  \n",
+       "\n",
+       "[32648 rows x 8 columns]"
+      ]
+     },
+     "execution_count": 166,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df = pd.read_csv(\"Used_Bikes.csv\")\n",
+    "df"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Question 1\n",
+    "\n",
+    "- (a) From the given above dataset calculate the mean for all numerical columns and convert it into dictionary and save it in the variable  **mean**.\n",
+    "\n",
+    "\n",
+    "- (b) From the given above dataset calculate the median for all numerical columns and convert it into dictionary and save it in the variable  **median**.\n",
+    "\n",
+    "\n",
+    "- (c) From the given above dataset calculate the mode for all numerical columns and convert it into dictionary and save it in the variable  **mode**.\n",
+    "\n",
+    "\n",
+    "- (d) From the mean , median and mode values of the column **kms_driven** ,it is positively skewed distribution.\n",
+    "\n",
+    "        - If the answer for the above statement is yes assign the value yes as string otherwise value no as string in the variable kms_driven.\n",
+    "\n",
+    "Save the outputs for (a), (b) and (c) in the following format -\n",
+    "\n",
+    "         {Column Name : Value}\n",
+    "\n",
+    "**Example**-\n",
+    "        \n",
+    "         {'age': 85.85,\n",
+    "         'kms_driven': 1500.01,\n",
+    "         'power': 200.01}\n",
+    "        \n",
+    "\n",
+    "**Note-**  Here round off the mean and median values to two decimal points and mode to the integer."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 167,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "df_mean=round(df.mean(),2)\n",
+    "mean=df_mean.to_dict()\n",
+    "df_median=round(df.median(),2)\n",
+    "median=df_median.to_dict()\n",
+    "# median\n",
+    "df_mode=df.mode(numeric_only=True)\n",
+    "df_mode=df_mode.astype('int')\n",
+    "mode=df_mode.to_dict()\n",
+    "# mode\n",
+    "if mean['kms_driven']>=0 and median['kms_driven']>=0 and mode['kms_driven'][0]:\n",
+    "    kms_driven=\"yes\"\n",
+    "\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 168,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'price': 68295.42, 'kms_driven': 26344.63, 'age': 8.05, 'power': 213.51}"
+      ]
+     },
+     "execution_count": 168,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "mean"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 169,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'price': 43000.0, 'kms_driven': 20373.0, 'age': 7.0, 'power': 150.0}"
+      ]
+     },
+     "execution_count": 169,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "median"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 170,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'price': {0: 25000},\n",
+       " 'kms_driven': {0: 20000},\n",
+       " 'age': {0: 4},\n",
+       " 'power': {0: 150}}"
+      ]
+     },
+     "execution_count": 170,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "mode"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Question 2\n",
+    "\n",
+    "- (a) From the column **owner** get the count of all categories and convert it into dictionary and save it in the variable **owner**.  \n",
+    "\n",
+    "\n",
+    "\n",
+    "- (b) The column **owner** looks to have a high class imbalance problem.\n",
+    "\n",
+    "         - If the answer for the above statement is yes assign the value yes as string otherwise value no as string in the variable class_imb. \n",
+    "         \n",
+    "  \n",
+    "For the question (a) save the output in the following format -\n",
+    "\n",
+    "         {Category Name : Count}\n",
+    "\n",
+    "**Example**-\n",
+    "        \n",
+    "         {'First Owner': 500,\n",
+    "         'Fourth Owner Or More': 300,\n",
+    "         'Second Owner': 200}\n",
+    "\n",
+    "         \n",
+    "                                \n",
+    "                            "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 171,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_cal=df.select_dtypes('object_')\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 172,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "owner = df['owner'].value_counts()\n",
+    "owner=owner.to_dict()\n",
+    "owner\n",
+    "class_imb = \"yes\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Question 3\n",
+    "\n",
+    "- For the given dataset find the following -\n",
+    "\n",
+    "              - (a) Population Variance of dataset of all numerical columns and save it in variable p_var.\n",
+    "         \n",
+    "              - (b) Population Standard Deviation of dataset of all numerical columns and save it in variable p_sd.\n",
+    "                                \n",
+    "For the questions (a) and (b) save the output in the following format -\n",
+    "\n",
+    "         {Column Name : Value}\n",
+    "\n",
+    "**Example**-\n",
+    "        \n",
+    "         {'age': 85.85,\n",
+    "         'kms_driven': 1500.01,\n",
+    "         'power': 200.01}\n",
+    "         \n",
+    "        \n",
+    "**Note-**  Here round it off the values to two decimal points and convert all variables it into dictionary."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 173,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'price': 8229611437.37,\n",
+       " 'kms_driven': 493203595.21,\n",
+       " 'age': 16.25,\n",
+       " 'power': 18070.57}"
+      ]
+     },
+     "execution_count": 173,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import statistics as st\n",
+    "p_var =np.var(df) \n",
+    "p_var=dict(round(p_var,2))\n",
+    "p_var\n",
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 174,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'price': 90717.21, 'kms_driven': 22208.19, 'age': 4.03, 'power': 134.43}"
+      ]
+     },
+     "execution_count": 174,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\n",
+    "\n",
+    "p_sd=np.std(df)\n",
+    "p_sd=dict(round(p_sd,2))\n",
+    "p_sd\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Question 4\n",
+    "\n",
+    "- For the given dataset find the following -\n",
+    "\n",
+    "              - (a) Interquartile Range of the column price and save it in variable iqr_price .\n",
+    "         \n",
+    "              - (b) Interquartile Range of the column kms_driven and save it in variable iqr_kms_driven.\n",
+    "                                \n",
+    "         \n",
+    "\n",
+    "**Note-**  Here round it off the values to two decimal points."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 175,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "55000.0\n",
+      "23000.0\n"
+     ]
+    }
+   ],
+   "source": [
+    "from scipy.stats import iqr\n",
+    "q3, q1 = np.percentile(df['price'], [75,25])\n",
+    "\n",
+    "\n",
+    "iqr_price       = round(q3-q1,2)\n",
+    "print(iqr_price)\n",
+    "q7, q5 = np.percentile(df['kms_driven'], [75,25])\n",
+    "iqr_kms_driven  =round(q7-q5,2) \n",
+    "print(iqr_kms_driven)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Question 5\n",
+    "\n",
+    "- (a) From the given dataset find the correlation matrix for all the numerical columns and save it in varibale **df_corr**.Here round it off the values to two decimal points.\n",
+    "\n",
+    "\n",
+    "\n",
+    "- (b) From **df_corr** Age is negatively correlated with Price.\n",
+    "\n",
+    "         - If the answer for the above statement is yes assign the value yes as string otherwise value no as string in the variable Age_Price. \n",
+    "\n",
+    "\n",
+    "- (c) From **df_corr** Power is negatively correlated with Price.\n",
+    "\n",
+    "         - If the answer for the above statement is yes assign the value yes as string otherwise value no as string in the variable Power_Price. \n",
+    "\n",
+    "\n",
+    "For the questions (a) save the output in the following format -\n",
+    "\n",
+    "         {Column Name : {Column Name : Value}}\n",
+    "\n",
+    "**Example**-\n",
+    "        \n",
+    "         {'age': {'age': 0.2, 'kms_driven': 0.08, 'power': -0.25, 'price': 0.08},\n",
+    "         'kms_driven': {'age': -0.15,\n",
+    "         'kms_driven': 0.3,\n",
+    "         'power': 0.18,\n",
+    "         'price': 0.58}}           "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 176,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'price': {'price': 1.0, 'kms_driven': -0.31, 'age': -0.4, 'power': 0.86}, 'kms_driven': {'price': -0.31, 'kms_driven': 1.0, 'age': 0.48, 'power': -0.26}, 'age': {'price': -0.4, 'kms_driven': 0.48, 'age': 1.0, 'power': -0.34}, 'power': {'price': 0.86, 'kms_driven': -0.26, 'age': -0.34, 'power': 1.0}}\n"
+     ]
+    }
+   ],
+   "source": [
+    "df_num=df[['price','kms_driven','age','power']]\n",
+    "df_corr     =round(df_num.corr(),2)\n",
+    "# print(df_corr)\n",
+    "df_corr=df_corr.to_dict()\n",
+    "correlation = df['age'].corr(df['price'])\n",
+    "if(correlation<0):\n",
+    "    Age_Price=\"yes\"\n",
+    "else:\n",
+    "    Age_Price=\"no\"\n",
+    "\n",
+    "correl = df['power'].corr(df['price'])\n",
+    "if(correl<0):\n",
+    "    Power_Price=\"yes\"\n",
+    "else:\n",
+    "    Power_Price=\"no\"\n",
+    "\n",
+    "print(df_corr)\n",
+    "# print(Power_Price)\n",
+    "# print(Age_Price)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Question 6\n",
+    "\n",
+    "- (a) From the given dataset find the skewness for all the numerical columns and save it in varibale **df_skew**.Here round it off the values to two decimal points.\n",
+    "\n",
+    "\n",
+    "\n",
+    "- (b) From **df_skew** age is fairly symmetrical.\n",
+    "\n",
+    "         - If the answer for the above statement is yes assign the value yes as string otherwise value no as string in the variable Age_Skew. \n",
+    "\n",
+    "\n",
+    "- (c) From **df_skew** power is highly skewed.\n",
+    "\n",
+    "         - If the answer for the above statement is yes assign the value yes as string otherwise value no as string in the variable Power_Skew. \n",
+    "\n",
+    "\n",
+    "For the question (a) save the output in the following format -\n",
+    "\n",
+    "         {Column Name : Value}\n",
+    "\n",
+    "**Example**-\n",
+    "        \n",
+    "         {'age': 55.85,\n",
+    "         'kms_driven': 76.01,\n",
+    "         'power': 61.01}\n",
+    "                            "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 177,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_skew    =round(df.skew(axis = 0, skipna = True),2)\n",
+    "df_skew=df_skew.to_dict()\n",
+    "df_skew\n",
+    "#If the skewness is between -0.5 and 0.5, the data are fairly symmetrical\n",
+    "if df_skew['age']>-0.5 and df_skew['age']<0.5:\n",
+    "    Age_Skew   = \"Yes\"\n",
+    "else:\n",
+    "    Age_Skew=\"No\" \n",
+    "# If the skewness is less than -1 or greater than 1, the data are highly skewed\n",
+    "if df_skew['power']<1 or df_skew['power']>1:\n",
+    "    Power_Skew = \"Yes\"\n",
+    "else:\n",
+    "    Power_Skew=\"No\"\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Run the below cell to save the results"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "with open('question1.txt', 'a') as f:\n",
+    "    \n",
+    "    print(mean , file=f)\n",
+    "    print(median , file=f)\n",
+    "    print(mode , file=f)\n",
+    "    print(kms_driven , file=f)\n",
+    "\n",
+    "with open('question2.txt', 'a') as f:\n",
+    "    print(owner, file=f)\n",
+    "    print(class_imb, file=f)\n",
+    "    \n",
+    "with open('question3.txt', 'a') as f:\n",
+    "    print(p_var , file=f)\n",
+    "    print(p_sd , file=f)\n",
+    "\n",
+    "with open('question4.txt', 'a') as f:\n",
+    "    print(iqr_price , file=f)\n",
+    "    print(iqr_kms_driven , file=f)\n",
+    "\n",
+    "with open('question5.txt', 'a') as f:\n",
+    "    \n",
+    "    print(df_corr , file=f)\n",
+    "    print(Age_Price , file=f)\n",
+    "    print(Power_Price , file=f)\n",
+    "    \n",
+    "    \n",
+    "with open('question6.txt', 'a') as f:\n",
+    "    print(df_skew , file=f)\n",
+    "    print(Age_Skew , file=f)\n",
+    "    print(Power_Skew , file=f)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.8"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
